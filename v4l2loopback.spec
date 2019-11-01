@@ -1,8 +1,9 @@
 %global debug_package %{nil}
+%define _disable_source_fetch 0
 
 Name:     v4l2loopback
-Version:  0.9.1
-Release:  2%{?dist}
+Version:  0.12.2
+Release:  1%{?dist}
 Summary:  Tools to create Video4Linux loopback recording devices
 Group:    System Environment/Kernel
 License:  GPLv2
@@ -66,10 +67,14 @@ make install-utils install-man DESTDIR="$RPM_BUILD_ROOT" PREFIX=%{_prefix} BINDI
 %{_usrsrc}/%{name}-%{version}
 
 %changelog
+* Fri Nov 01 2019 Jan Drögehoff <jandroegehoff@gmail.com - 0.12.2
+- Update to latest version
+- fix copr build
+
 * Thu Jun 23 2016 Daniel Miranda <danielkza2@gmail.com> - 0.9.1-2
-- Remove unneeded build dependencies 
+- Remove unneeded build dependencies
 - Fix DKMS trigger on package update
 
 * Wed Jun 22 2016 Daniel Miranda <danielkza2@gmail.com> - 0.9.1-1
-- Initial release 
+- Initial release
 
