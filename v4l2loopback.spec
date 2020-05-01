@@ -2,7 +2,7 @@
 %define _disable_source_fetch 0
 
 Name:     v4l2loopback
-Version:  0.12.3
+Version:  0.12.5
 Release:  1%{?dist}
 Summary:  Tools to create Video4Linux loopback recording devices
 Group:    System Environment/Kernel
@@ -67,6 +67,9 @@ make install-utils install-man DESTDIR="$RPM_BUILD_ROOT" PREFIX=%{_prefix} BINDI
 %{_usrsrc}/%{name}-%{version}
 
 %changelog
+* Fri May 01 2020 Jan Drögehoff <sentrycraft123@gmail.com> - 0.12.5-1
+- Bump to version 0.12.5
+
 * Fri Nov 01 2019 Jan Drögehoff <jandroegehoff@gmail.com - 0.12.2
 - Update to latest version
 - fix copr build
