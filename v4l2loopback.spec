@@ -2,13 +2,13 @@
 %define _disable_source_fetch 0
 
 Name:     v4l2loopback
-Version:  0.12.5
-Release:  2%{?dist}
+Version:  0.15.1
+Release:  3%{?dist}
 Summary:  Tools to create Video4Linux loopback recording devices
 Group:    System Environment/Kernel
 License:  GPLv2
-URL:      https://github.com/umlaeute/v4l2loopback
-Source0:  https://github.com/umlaeute/v4l2loopback/archive/v%{version}.tar.gz
+URL:      https://github.com/v4l2loopback/v4l2loopback
+Source0:  https://github.com/v4l2loopback/v4l2loopback/archive/v%{version}.tar.gz
 
 BuildArch: noarch
 
@@ -47,7 +47,7 @@ if [ $1 -ne 1 ]; then
 fi
 
 %prep
-%setup -q
+%setup -q 
 
 %build
 # v4l2loopback is a shell script
