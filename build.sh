@@ -2,6 +2,9 @@
 
 copr_name="$1"
 
+# Allow error handling
+set -e
+
 specs=(*.spec)
 spec="${specs[0]}"
 
@@ -11,6 +14,7 @@ spectool -g "$spec" -C sources
 mock_dist=$(mock --offline --shell "rpm --eval 'DIST:%{dist}'" | grep '^DIST:' | cut -d: -f2)
 srpm_name=$(rpmspec -q --srpm -D "dist $mock_dist" --queryformat '%{NEVR}.src.rpm\n' "$spec" | grep 'src\.rpm$')
 
+echo "Building SRPM: $srpm_name"
 mock --buildsrpm --sources "$PWD/sources" --spec "$PWD/$spec" --resultdir "$PWD/rpms"
 
 if [ -n "$copr_name" ]; then

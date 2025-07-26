@@ -3,17 +3,16 @@
 
 Name:     v4l2loopback
 Version:  0.15.1
-Release:  3%{?dist}
+Release:  1%{?dist}
 Summary:  Tools to create Video4Linux loopback recording devices
 Group:    System Environment/Kernel
 License:  GPLv2
 URL:      https://github.com/v4l2loopback/v4l2loopback
 Source0:  https://github.com/v4l2loopback/v4l2loopback/archive/v%{version}.tar.gz
 
-BuildArch: noarch
-
 BuildRequires:  make
 BuildRequires:  help2man
+BuildRequires:  gcc
 
 Requires:       bash
 Requires:       v4l-utils
@@ -35,7 +34,7 @@ Requires: kernel-devel
 Provides: %{name}-kmod = %{version}
 
 %description dkms
-This package contains the module source and DKMS configuration to build thev
+This package contains the module source and DKMS configuration to build the
 v4l2loopback kernel module.
 
 %post dkms
@@ -47,17 +46,16 @@ if [ $1 -ne 1 ]; then
 fi
 
 %prep
-%setup -q 
+%setup -q
 
 %build
 # v4l2loopback is a shell script
 
 %install
-%{__rm} -rf $RPM_BUILD_ROOT
-mkdir -p "${RPM_BUILD_ROOT}%{_usrsrc}"
-cp -r ../%{name}-%{version} "${RPM_BUILD_ROOT}%{_usrsrc}/"
+make install-utils install-man DESTDIR="%{buildroot}" PREFIX=%{_prefix} BINDIR=%{_bindir} MANDIR=%{_mandir}
 
-make install-utils install-man DESTDIR="$RPM_BUILD_ROOT" PREFIX=%{_prefix} BINDIR=%{_bindir} MANDIR=%{_mandir}
+mkdir -p "%{buildroot}%{_usrsrc}"
+cp -a . "%{buildroot}%{_usrsrc}/%{name}-%{version}"
 
 %files
 %doc AUTHORS NEWS README.md
@@ -65,9 +63,15 @@ make install-utils install-man DESTDIR="$RPM_BUILD_ROOT" PREFIX=%{_prefix} BINDI
 %{_mandir}/man1/*.1*
 
 %files dkms
+%config(noreplace) %{_usrsrc}/%{name}-%{version}/dkms.conf
+%doc AUTHORS COPYING NEWS README.md TODO
+%doc doc examples man
 %{_usrsrc}/%{name}-%{version}
 
 %changelog
+* Sat Jul 26 2025 John Carlo Santos <sjc.71415@gmail.com> - 0.15.1-1
+- Bump to version 0.15.1
+
 * Sat May 30 2020 Jan Drögehoff <sentrycraft123@gmail.com> - 0.12.5-2
 - add kernel-devel requirement
 
