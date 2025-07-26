@@ -1,5 +1,7 @@
 ## v4l2loopback packaging instructions for Fedora
 
+<a href="https://copr.fedorainfracloud.org/coprs/kuya-carlo/v4l2loopback/package/v4l2loopback/"><img src="https://copr.fedorainfracloud.org/coprs/kuya-carlo/v4l2loopback/package/v4l2loopback/status_image/last_build.png" /></a>
+
 Packager: Daniel Miranda <danielkza2@gmail.com>
 Author: IOhannes m zmölnig <zmoelnig@iem.at> and others
 
