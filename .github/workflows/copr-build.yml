@@ -1,0 +1,68 @@
+# Workflow used to bump version based on version of v4l2loopback
+name: Spec update on upstream release
+permissions:
+  contents: write
+
+on:
+  schedule:
+  - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-for-updates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout packaging repo
+        uses: actions/checkout@v4
+      
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+      
+      - name: Get latest upstream release tag
+        id: upstream_release
+        run: |
+          set -euo pipefail
+          LATEST=$(curl -s https://api.github.com/repos/v4l2loopback/v4l2loopback/tags \
+            | jq -r '.[].name' \
+            | sed 's/^v//' \
+            | sort -V \
+            | tail -n 1)
+          echo "version=$LATEST" >> $GITHUB_OUTPUT
+
+      - name: Get current spec version
+        id: spec_release
+        run: |
+          CURRENT_SPEC_VERSION=$(grep "^Version:" v4l2loopback.spec | awk '{print $2}')
+          echo "Current spec version: $CURRENT_SPEC_VERSION"
+          echo "version=$CURRENT_SPEC_VERSION" >> $GITHUB_OUTPUT
+        
+      - name: Update spec file if needed
+        if: steps.upstream_release.outputs.version != steps.spec_release.outputs.version
+        run: |
+          sed -i "s/^Version:.*/Version: ${{ steps.upstream_release.outputs.version }}/" v4l2loopback.spec
+          sed -i "s/^Release:.*/Release: 1%{?dist}/" v4l2loopback.spec
+
+      - name: Commit and push changes
+        if: steps.upstream_release.outputs.version != steps.spec_release.outputs.version
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add v4l2loopback.spec
+          git commit -m "Bump to version ${{ steps.upstream_release.outputs.version }}"
+          git push
+
+      - name: Get latest commit SHA
+        id: commit_sha
+        run: echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Create tag
+        if: steps.upstream_release.outputs.version != steps.spec_release.outputs.version
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/v${{ steps.upstream_release.outputs.version }}',
+              sha: '${{ steps.commit_sha.outputs.sha }}'
+            })
