@@ -2,8 +2,8 @@
 %define _disable_source_fetch 0
 
 Name:     v4l2loopback
-Version:  0.15.1
-Release:  1%{?dist}
+Version: 0.15.2
+Release: 1%{?dist}
 Summary:  Tools to create Video4Linux loopback recording devices
 Group:    System Environment/Kernel
 License:  GPLv2
