@@ -69,6 +69,12 @@ cp -a . "%{buildroot}%{_usrsrc}/%{name}-%{version}"
 %{_usrsrc}/%{name}-%{version}
 
 %changelog
+* Tue Nov 25 2025 GitHub Action <action@github.com> - 0.15.3
+- Bump to version 0.15.3
+
+* Sun Nov 16 2025 GitHub Action <action@github.com> - 0.15.2
+- Bump to version 0.15.2
+
 * Sat Jul 26 2025 John Carlo Santos <sjc.71415@gmail.com> - 0.15.1-1
 - Bump to version 0.15.1
 
