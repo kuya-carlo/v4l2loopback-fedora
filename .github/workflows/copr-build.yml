@@ -44,7 +44,7 @@ jobs:
 
       - name: Add entries to the changelog
         run: |
-          NEW_CHANGELOG_ENTRY="* $(date '+%a %b %d %Y') John Carlo Santos <sjc.71415@gmail.com> - ${{ steps.upstream_release.outputs.version }}
+          NEW_CHANGELOG_ENTRY="* $(date '+%a %b %d %Y') GitHub Action <action@github.com> - ${{ steps.upstream_release.outputs.version }}
           - Bump to version ${{ steps.upstream_release.outputs.version }}
           "
 
