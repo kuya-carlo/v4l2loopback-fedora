@@ -54,6 +54,9 @@ jobs:
       - name: Commit and push changes
         if: steps.upstream_release.outputs.version != steps.spec_release.outputs.version
         run: |
+          git config gpg.format ssh
+          git config user.signingkey /github/home/.ssh/signing_key
+          git config commit.gpgsign true
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add v4l2loopback.spec
