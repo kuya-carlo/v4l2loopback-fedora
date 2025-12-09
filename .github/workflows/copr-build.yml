@@ -36,11 +36,20 @@ jobs:
           echo "Current spec version: $CURRENT_SPEC_VERSION"
           echo "version=$CURRENT_SPEC_VERSION" >> $GITHUB_OUTPUT
         
-      - name: Update spec file if needed
+      - name: Update version in spec file
         if: steps.upstream_release.outputs.version != steps.spec_release.outputs.version
         run: |
           sed -i "s/^Version:.*/Version: ${{ steps.upstream_release.outputs.version }}/" v4l2loopback.spec
           sed -i "s/^Release:.*/Release: 1%{?dist}/" v4l2loopback.spec
+
+      - name: Add entries to the changelog
+        run: |
+          NEW_CHANGELOG_ENTRY="* $(date '+%a %b %d %Y') John Carlo Santos <sjc.71415@gmail.com> - ${{ steps.upstream_release.outputs.version }}
+          - Bump to version ${{ steps.upstream_release.outputs.version }}
+          "
+
+          # Insert right after '%changelog'
+          sed -i "/^%changelog/a $NEW_CHANGELOG_ENTRY" v4l2loopback.spec
 
       - name: Commit and push changes
         if: steps.upstream_release.outputs.version != steps.spec_release.outputs.version
