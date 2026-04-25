@@ -37,12 +37,9 @@ Provides: %{name}-kmod = %{version}
 This package contains the module source and DKMS configuration to build the
 v4l2loopback kernel module.
 
-%post dkms
-%{_prefix}/lib/dkms/common.postinst %{name} %{version}
-
 %preun dkms
-if [ $1 -ne 1 ]; then
-    dkms remove -m %{name} -v %{version} --all --rpm_safe_upgrade || :
+if [ $1 -eq 0 ]; then
+    dkms remove -m %{name} -v %{version} --all || :
 fi
 
 %prep
@@ -56,6 +53,17 @@ make install-utils install-man DESTDIR="%{buildroot}" PREFIX=%{_prefix} BINDIR=%
 
 mkdir -p "%{buildroot}%{_usrsrc}"
 cp -a . "%{buildroot}%{_usrsrc}/%{name}-%{version}"
+
+%post dkms
+# Clean up any broken/ghost entries from previous versions
+dkms status %{name} | grep "missing" | cut -d, -f1-2 | tr -d ':' | while read -r m v; do
+    dkms remove -m $m -v $v --all --rpm_safe_upgrade || :
+done
+
+# Register and build the current version
+dkms add -m %{name} -v %{version} --rpm_safe_upgrade || :
+dkms build -m %{name} -v %{version} || :
+dkms install -m %{name} -v %{version} || :
 
 %files
 %doc AUTHORS NEWS README.md
